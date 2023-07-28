@@ -1,35 +1,24 @@
-import React, {useState} from 'react'
+import React from 'react'
+import { IDataSearch } from '../models/IDataSearch'
 
-export const Search = () => {
-    const [value, setValue] = useState<string>('')
-    const [valueDirty, setValueDirty] = useState<boolean>(false)
-    
-    const handleValue:React.ChangeEventHandler<HTMLInputElement> = event => {
-        setValue(event.target.value)
-    }
-    const blurHandler:React.FocusEventHandler = () => {
-        setValueDirty(!valueDirty)
-    }
-    const onSubmitSearch:React.KeyboardEventHandler = (event) => {
-        if (event.key !== 'Enter') {
-            return
-        }
-        if (value.trim()) {
-            console.log('Search', value)
-        }
-    }
+export const Search = (props: IDataSearch) => {
     return (
-        <div className='form-group'>
-            {valueDirty && <div style={{color: 'red'}}>Поле не может быть пустым</div>}
-            <input
-                type='text'
-                className='form-control'
-                placeholder='Введите ник пользователя'
-                value={value}
-                onChange={handleValue}
-                onKeyUp={onSubmitSearch}
-                onBlur={blurHandler}
-            />
-        </div>
+        <React.Fragment>
+            <div className='form-group'>
+                {props.valueDirty && !props.input && 
+                <div className='text-danger'>
+                    Поле не может быть пустым
+                </div>}
+                <input
+                    type='text'
+                    className='form-control mt-1'
+                    placeholder='Введите ник пользователя'
+                    value={props.input}
+                    onChange={props.handleValue}
+                    onKeyUp={props.onSubmitSearch}
+                    onBlur={props.blurHandler}
+                />
+            </div>
+        </React.Fragment>
     )
 }
