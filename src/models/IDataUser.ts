@@ -2,9 +2,17 @@ export interface IDataUser {
     login: string,
     avatar_url: string,
     id: number,
-    url: string
+    url: string,
+    name: string,
+    public_repos: number,
+    followers: number,
+    company: string,
+    location: string,
+    following: string,
+    html_url:string
 }
 
 export interface IData {
-    items: IDataUser[]
+    total_count: number;
+    items: IDataUser[];
 }

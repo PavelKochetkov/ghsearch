@@ -12,7 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Main/>}/>
           <Route path="faq" element={<Faq/>}/>
-          <Route path="/profile/:name" element={<Profile/>}/>
+          <Route path="/profile/:login" element={<Profile/>}/>
         </Routes>
       </div>
     </React.Fragment>

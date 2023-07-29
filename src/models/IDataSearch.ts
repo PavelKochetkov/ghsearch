@@ -1,7 +1,7 @@
 export interface IDataSearch {
     input: string
     handleValue: React.ChangeEventHandler
-    onSubmitSearch: React.KeyboardEventHandler
+    onSubmitSearch: () => void
     blurHandler: React.FocusEventHandler
     valueDirty: boolean
 }
