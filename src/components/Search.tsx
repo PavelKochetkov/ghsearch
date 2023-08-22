@@ -25,7 +25,8 @@ export const Search = (props: IDataSearch) => {
                 <div className='col-auto'>
                     <button 
                         type='button' 
-                        className='btn btn-primary' 
+                        className='btn btn-primary'
+                        disabled={!props.input} 
                         onClick={() => props.onSubmitSearch()}>
                             Найти
                     </button>

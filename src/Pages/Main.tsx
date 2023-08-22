@@ -5,7 +5,6 @@ import { IDataUser } from '../models/IDataUser'
 import { Card } from '../components/Card'
 import { getUsersByQuery } from '../api/user'
 
-
 export const Main = () => {
     const [input, setInput] = useState<string>('')
     const [currentPage, setCurrentPage] = useState<number>(1)
@@ -14,6 +13,7 @@ export const Main = () => {
     const [valueDirty, setValueDirty] = useState<boolean>(false)
     const [users, setUser] = useState<IDataUser[]>([])
     const [loading, setLoading] = useState<boolean>(false)
+    const [error, setError] = useState<string>('')
 
     const perPage = 10
     
@@ -27,9 +27,14 @@ export const Main = () => {
         if (input.trim()) {
             const search = async () => {
                 setLoading(true)
-                const response = await getUsersByQuery(input, currentPage, perPage)
-                setUser(response.data.items)
-                setTotalCount(response.data.total_count <= 1000 ? response.data.total_count : 1000)
+                try {
+                    const response = await getUsersByQuery(input, currentPage, perPage)
+                    setUser(response.data.items)
+                    setTotalCount(response.data.total_count <= 1000 ? response.data.total_count : 1000)
+                    response.data.total_count === 0 ? setError('Пользователь не найден') : setError('') 
+                } catch {
+                    setError('Сервер не доступен. Повторите запрос позже')
+                }
                 setLoading(false)
             }
             search()
@@ -42,11 +47,9 @@ export const Main = () => {
 
     useEffect(() => {
         const resultPages: number[] = [];
-
         for (let i = 0; i < Math.ceil(totalCount / perPage); i++) {
             resultPages.push(i + 1)
         }
-
         setTotalPages(resultPages)
     }, [totalCount])
      return (
@@ -58,9 +61,9 @@ export const Main = () => {
                 onSubmitSearch={onSubmitSearch}
                 valueDirty={valueDirty}
             />
-            {loading ? (
-                <div className='text-center mt-4'><h5 className='text-primary'>Загрузка...</h5></div>
-            ) : (
+            {loading ? (<div className='text-center mt-4'><h5 className='text-primary'>Загрузка...</h5></div>) : 
+            users.length === 0 ? (<div className='text-center mt-4'><h5 className='text-danger'>{error}</h5></div>) :
+            (
                 <React.Fragment>
                     <div className='row mt-4'>
                         {users.map(items => <Card items={items} key={items.id}/>)}
@@ -78,7 +81,7 @@ export const Main = () => {
                             ))}
                         </ul>
                     )}
-                </React.Fragment>
+                    </React.Fragment>
             )}
         </React.Fragment>
     )

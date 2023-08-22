@@ -8,17 +8,22 @@ export const Profile = () => {
     const params = useParams<{login: string}>();
 
     const [user, setUser] = useState<IDataUser>()
+    const [error, setError] = useState<string>('')
 
     useEffect(() => {
         const getUser = async () => {
-            const response = await getUserByLogin(String(params.login))
-            setUser(response.data)
+            try {
+                const response = await getUserByLogin(String(params.login))
+                setUser(response.data)
+            } catch {
+                setError('Сервер не доступен. Повторите запрос позже')
+            }
         }
         getUser()
     }, [])
 
     return user ? (
-        <div>
+        <React.Fragment>
             <img className="card-img-top mt-1 p-1" style={{width:'200px'}} src={user.avatar_url} alt={user.login}/>
             <div>
                 <h2 className="mt-4">Профиль - {params.login}</h2>
@@ -46,8 +51,9 @@ export const Profile = () => {
             </div>
             <NavLink to={user.html_url} className="btn btn-primary" target="_blank">Перейти в профиль</NavLink>
             <NavLink to="/" className="btn btn-warning m-3">Перейти на главную</NavLink>
-        </div>
-    ) : (
-        <div className='text-center mt-4'><h5 className='text-primary'>Загрузка...</h5></div>
-    )
+        </React.Fragment>
+    ) : 
+    !user ? 
+        (<div className='text-center mt-4'><h5 className='text-danger'>{error}</h5></div>) :
+        (<div className='text-center mt-4'><h5 className='text-primary'>Загрузка...</h5></div>)
 }
